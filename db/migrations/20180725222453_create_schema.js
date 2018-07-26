@@ -33,16 +33,13 @@ exports.up = function(knex, Promise) {
 }
 
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTable('Events_Times', function (table) { 
-        }).then(data => {        
-            return knex.schema.dropTable('Attendees_Times', function (table) {
+    return knex.schema.dropTable('Attendees_Times', function (table) {
+    }).then(data => {
+        return knex.schema.dropTable('Times', function (table) {
         }).then(data => {
-            return knex.schema.dropTable('Times', function (table) {
+            return knex.schema.dropTable('Attendees', function (table) {
             }).then(data => {
-                return knex.schema.dropTable('Attendees', function (table) {
-                }).then(data => {
-                    return knex.schema.dropTable('Events', function (table) {
-                    })
+                return knex.schema.dropTable('Events', function (table) {
                 })
             })
         })
