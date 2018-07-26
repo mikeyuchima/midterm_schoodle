@@ -27,10 +27,14 @@
 <!-- welcome message -->
   <div>
     <body>
-      <h1> Event Name </h1>
-      <h2>by: host</h2>
-      <h2>300 City Centre Dr, Mississauga, ON L5B 3C1</h2>
-      <p>Time Start: 5:00 - Time End: 6:00</p>
+      <h1><%= title %></h1>
+      <h2>by: <%= host%></h2>
+      <h2><%= location%></h2>
+      <p>Date: </p>
+     <!-- <p>Time Start: <%= timeSlots.start_time%> - Time End: <%= timeSlots.end_time %></p> -->
+      <% for(var _timeSlot in timeSlots) { %>
+        <p>Time Start: <%= timeSlots[_timeSlot].start_time%> - Time End: <%= timeSlots[_timeSlot].end_time %>
+      <% } %>
     </body>
   </div>
 
