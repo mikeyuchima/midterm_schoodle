@@ -14,10 +14,8 @@ const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
-const EventManager = require('./lib/Event')(knex)
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
-const eventsRoutes = require("./routes/events")(EventManager);
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -39,15 +37,42 @@ app.use(express.static("public"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
-app.use("/events/", eventsRoutes);
+// app.use("/events/", eventsRoutes);
 
 // Home page
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.listen(PORT, () => {
-  console.log("Example app listening on port " + PORT);
+app.get("/event/:hash", (req, res) => {
+
+  let templateVars = {};
+
+  knex
+    .select()
+    .from("events")
+    .where("hash", '=', req.params.hash)
+    .then((event) => {
+      templateVars = event[0];
+
+      templateVars.timeSlots = '';
+
+      knex
+        .select()
+        .from("times")
+        .where('times.event_id', '=', event[0].id)
+        .then((times) => {
+          templateVars.timeSlots = [];
+
+          for(var time in times){
+            templateVars.timeSlots.push(times[time]);
+          }
+
+          console.log(templateVars.timeSlots);
+
+          res.render('event', templateVars);
+        });
+    });
 });
 
 // Create Event
@@ -58,4 +83,8 @@ app.get("/create", (req, res) => {
 // Event
 app.get("/event", (req, res) => {
   res.render("event");
+});
+
+app.listen(PORT, () => {
+  console.log("Example app listening on port " + PORT);
 });

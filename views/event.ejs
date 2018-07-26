@@ -25,21 +25,22 @@
   </head>
 
 <!-- welcome message -->
+
   <body>
 
-    <div>
-      <div class="text-center">
-        <h1> Event Name </h1>
-        <h2>by: host</h2>
-        <h2>300 City Centre Dr, Mississauga, ON L5B 3C1</h2>
-      </div>
+    <h1><%= title %></h1>
+    <h2>by: <%= host%></h2>
+    <h2><%= location%></h2>
+    <p>Date: </p>
+    <% for(var _timeSlot in timeSlots) { %>
+      <p>Time Start: <%= timeSlots[_timeSlot].start_time%> - Time End: <%= timeSlots[_timeSlot].end_time %>
+    <% } %>
 
 
 <!--       column  version     -->
 
 <!--   <div class="table-responsive text-center">
     <h1> Times </h1>
-  </div>
 
   <section class="row text-center">
     <div id="column" class="column col-sm small">
