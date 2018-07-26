@@ -5,3 +5,80 @@ body {
     color: #244751;
   }
 }
+
+#form_id {
+  margin: 1em;
+
+}
+
+.Site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.Site-content {
+  flex: 1;
+}
+
+
+.mycontent-left {
+  border-right: 1px dashed #333;
+}
+
+#attendees-input-id {
+  display: flex;
+  justify-content: center;
+}
+
+#atendees-submit {
+  margin: 1em;
+  position:relative;
+  top: 7px;
+}
+
+
+#times-date{
+  display: flex;
+  justify-content: center;
+  margin: 0.1em;
+  border-radius: 5px;
+}
+
+.time-div-select{
+  display: inline-block;
+  margin-top: 20px;
+}
+
+#submit-times-button{
+  border-radius: 25px;
+  background-color: #00ACF4;
+  color: #EFF8FF;
+  margin-top: 10px;
+}
+
+#submit-scoodle-button{
+  border-radius: 25px;
+  background-color: #00ACF4;
+  color: #EFF8FF;
+  margin: 20px;
+  margin-right: 70px;
+  font-size: 22px;
+  font-style: italic;
+
+}
+
+
+
+
+#footer_id {
+  background-color: #F8F9FA;
+  position:relative;
+  bottom:0;
+  width:100%;
+  margin-top: 200px;
+}
+
+
+
+
