@@ -64,19 +64,49 @@
     <label for="event_note">Add Note:</label>
     <textarea class="form-control form-control-sm" id="event_note" rows="3" placeholder="Input notes in regards to the event..."></textarea>
   </div>
+
+<!--    Select Time    -->
+<!-- please move the jquery later -->
+<script type="text/javascript">
+  var dateControl = document.querySelector('input[type="date"]');
+  dateControl.value = '2017-06-01';
+</script>
+<!-- please move the jquery later -->
+  <label for="times-date">Input Date:</label>
+  <input id="times-date" type="date" value="2017-06-01">
+  <form> 
+
+   <div class = "justify-content-center">
+      <label for="times-end">Start Time:</label>
+      <input id="times-end" type="time" name="appt-time"
+             min="00:00" max="24:00" required
+             pattern="[0-9]{2}:[0-9]{2}">
+      <span class="validity"></span>
+    </div>
+
+    <div class = "justify-content-center">
+      <label for="times-end">End Time:</label>
+      <input id="times-end" type="time" name="appt-time"
+             min="00:00" max="24:00" required
+             pattern="[0-9]{2}:[0-9]{2}">
+      <span class="validity"></span>
+    </div>
+
+    <div>
+        <input type="submit" value="Submit Time">
+    </div>
+  </form>
+
 <!--                    Adding buttons           -->
   <button type="submit" class="btn btn-primary">Submit</button>
   <button id="reveal" type="button" class="btn btn-primary">Reveal Calander</button>
+
+
 </form>
 
 
+
   </body>
-
-
-
-
-
-
 
 
   <!--       footer partial          -->
