@@ -46,3 +46,13 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
+
+// Create Event
+app.get("/create", (req, res) => {
+  res.render("create");
+});
+
+// Event
+app.get("/event", (req, res) => {
+  res.render("event");
+});
