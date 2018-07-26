@@ -1,9 +1,10 @@
 exports.up = function(knex, Promise) {
     return knex.schema.createTable('events', function (table) { 
         table.increments('id').primary();
+        table.string('host');
         table.string('title');
         table.string('description');
-        table.string('URL');
+        table.string('hash');
         table.string('location');
         }).then(() => {        
             return knex.schema.createTable('attendees', function (table) {
