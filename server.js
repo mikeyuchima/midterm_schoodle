@@ -88,3 +88,22 @@ app.get("/event", (req, res) => {
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
+
+app.post("/create", (req, res) => {
+  knex('events').insert({
+      host: req.body.host,
+      title: req.body.title,
+      description: req.body.description,
+      hash: 'thisisahash',
+      location: req.body.location
+  }).returning('*')
+    .then(data => {
+      return knex('times').insert({
+        start_time: data.start,
+        end_time: data.end,
+        date: data.date,
+        event_id: data.id
+      })
+  })
+  res.redirect("/create");
+});

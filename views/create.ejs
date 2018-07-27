@@ -1,114 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Meta Information -->
     <title>Create Events</title>
 
-    <!--                bootstrap                -->
+    <!-- External CSS  -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <!-- External JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-<!--                  vanilla style sheets           -->
-
+    <!-- App JS -->
+    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+    
+    <!-- External Link -->
     <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
     <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
     <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
 
-    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-    <script type="text/javascript" src="/scripts/app.js"></script>
-
-
-<!--        header partial            -->
-    <% include ./partials/_header %>
   </head>
 
-
-
-
-
-
-<!-- welcome message -->
-
   <body>
+    <!-- Top Nav Bar -->
+    <% include ./partials/_header %>
 
-
-<!--                    Event Title           -->
-  <form id="form_id" class = "container">
-    <div class="form-group">
-      <label for="event_title">Event Name:</label>
-      <input type="text" id="event_title" class="form-control col-md-8" placeholder="Input event name...">
-    </div>
-    <!--                    Event Host           -->
-    <div class="form-group">
-      <label for="event_host">Event Host:</label>
-      <input type="text" id="event_host" class="form-control form-control-sm col-md-8" placeholder="Who is the events Host...">
-    </div>
-
-    <!--          location        -->
-    <label for="event_location">Event Location:</label>
-    <div id= "event_location" class="form-row">
-      <div class="col-7">
-        <input id="event_city" type="text" class="form-control form-control-sm" placeholder="City">
-      </div>
-      <div class="col">
-        <input type="text" class="form-control form-control-sm" placeholder="State/Province">
-      </div>
-      <div class="col">
-        <input type="text" class="form-control form-control-sm" placeholder="Zip">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="event_note">Add Note:</label>
-      <textarea class="form-control form-control-sm" id="event_note" rows="3" placeholder="Input notes in regards to the event..."></textarea>
-    </div>
-
-  <!--    Select Time    -->
-  <!-- please move the jquery later -->
-  <script type="text/javascript">
-    var dateControl = document.querySelector('input[type="date"]');
-    dateControl.value = '2017-06-01';
-  </script>
-  <!-- please move the jquery later -->
-    <label for="times-date">Input Date:</label>
-    <input id="times-date" type="date" value="2017-06-01">
-
-    <form>  
-
-      <div class = "time-div-select">
-        <label for="times-end">Start Time:</label>
-        <input id="times-start" type="time" name="appt-time"
-               min="00:00" max="24:00" required
-               pattern="[0-9]{2}:[0-9]{2}">
-        <span class="validity"></span>
-      </div>
-
-      <div class = "time-div-select">
-        <label for="times-end">End Time:</label>
-        <input id="times-end" type="time" name="appt-time"
-               min="00:00" max="24:00" required
-               pattern="[0-9]{2}:[0-9]{2}">
-        <span class="validity"></span>
-        <input id = "submit-times-button" for="times-end" type="submit" value="Insert Time">
-
-      </div>
-    </form>
-
-  <!--                    Adding buttons           -->
-      <!-- <button id="submit-scoodle-button" type="submit" class="btn btn-primary">Scoodle!</button> -->
-      <button class="float-right" id = "submit-scoodle-button" type="submit"> Scoodle!</button>
-    </form>
-
+  <form class = "container" action="/create" method="POST">
+    <input type="text" id="event_title" name="title" class="form-control col-md-8" placeholder="What is your event's name?"/>
+    <input type="text" id="event_host" name="host"class="form-control form-control-sm col-md-8" placeholder="Who's Hosting?">
+    <input type="text" id="event_location" name="location"class="form-control form-control-sm" placeholder="Where is it?">
+    <textarea class="form-control form-control-sm" id="event_description" name="description"rows="3" placeholder="Event Details"></textarea>
+    <input id="times-date" type="date" name="date" placeholder:"date">
+    <input id="times-start" type="time" name="start" min="00:00" max="24:00" required pattern="[0-9]{2}:[0-9]{2}" placeholder="start : time">
+    <span class="validity"></span>
+    <input id="times-end" type="time" name="end" min="00:00" max="24:00" required pattern="[0-9]{2}:[0-9]{2}" placeholder="end:time">
+    <input id = "submit-times-button" for="times-end" type="submit" value="Add Time">
+    <button type="submit"> Submit </button>
   </body>
-
-
-
-  <!--       footer partial          -->
 <footer>
   <% include ./partials/_footer %>
 </footer>
-
-
 </html>
