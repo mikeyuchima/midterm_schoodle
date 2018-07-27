@@ -49,30 +49,36 @@ app.get("/event/:hash", (req, res) => {
   let templateVars = {};
 
   knex
-    .select()
-    .from("events")
-    .where("hash", '=', req.params.hash)
-    .then((event) => {
-      templateVars = event[0];
+  .select()
+  .from("events")
+  .limit(1)
+  .where("hash", '=', req.params.hash)
+  .then((event) => {
+    templateVars = event[0];
 
-      templateVars.timeSlots = '';
-
+    Promise.all([
       knex
-        .select()
-        .from("times")
-        .where('times.event_id', '=', event[0].id)
-        .then((times) => {
-          templateVars.timeSlots = [];
-
-          for(var time in times){
-            templateVars.timeSlots.push(times[time]);
-          }
-
-          console.log(templateVars.timeSlots);
-
-          res.render('event', templateVars);
-        });
+      .select()
+      .from("times")
+      .where('times.event_id', '=', event[0].id)
+      .then((times) => {
+        templateVars.timeSlots = [];
+        for(var time in times){ templateVars.timeSlots.push(times[time]); }
+      }),
+      knex
+      .select()
+      .from("attendees")
+      .where('attendees.event_id', '=', event[0].id)
+      .then((attendees) => {
+        templateVars.attendees = [];
+        for(var person in attendees){ templateVars.attendees.push(attendees[person]); }
+      })
+    ])
+    .then(() => {
+      console.log(templateVars);
+      res.render('event', templateVars);
     });
+  });
 });
 
 // Create Event

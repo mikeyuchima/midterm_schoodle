@@ -26,136 +26,60 @@
 
 <!-- welcome message -->
 
-  <body>
-
+<body>
+  <section class="container">
     <h1><%= title %></h1>
-    <h2>by: <%= host%></h2>
+    <h2>by <%= host%></h2>
     <h2><%= location%></h2>
-    <p>Date: </p>
-    <% for(var _timeSlot in timeSlots) { %>
-      <p>Time Start: <%= timeSlots[_timeSlot].start_time%> - Time End: <%= timeSlots[_timeSlot].end_time %>
-    <% } %>
+    <p><%= timeSlots[0].date%> </p>
+  </section>
+
 
 
 <!--       column  version     -->
 
-<!--   <div class="table-responsive text-center">
+   <div class="table-responsive text-center">
     <h1> Times </h1>
 
-  <section class="row text-center">
+  <section class="container row text-center">
     <div id="column" class="column col-sm small">
-      <h2>Id 01</h2>
-      <h3>3:00</h3>
-      <h3>4:00</h3>
-      <p>Some text..</p>
+      <h3>Start Time</h3>
+      <h3>End Time</h3>
     </div>
 
-    <div class="column col-sm small" style="background-color:#bbb;">
-      <h2>Id02</h2>
-      <h3>3:00</h3>
-      <h3>4:00</h3>
+    <% for(var _timeSlot in timeSlots) { %>
+      <% if(_timeSlot % 2 == 0)  { %>
+      <div id="column" class="column col-sm small" style="background-color:#bbb;">
+      <% } else { %>
+      <div id="column" class="column col-sm small" style="background-color:#ccc;">
+      <% } %>
+      <h3><%= timeSlots[_timeSlot].start_time%></h3>
+      <h3><%= timeSlots[_timeSlot].end_time %></h3>
+      </div>
+    <% } %>
 
-        <p>Joe</p>
-        <p>Clare</p>
-        <p>Mike</p>
+  </section>
 
-    </div>
-
-    <div class="column col-sm small" style="background-color:#ccc;">
-      <h2>Id03</h2>
-      <h3>3:00</h3>
-      <h3>4:00</h3>
-
-        <p>Clare</p>
-        <p>Mike</p>
-
-    </div>
-
-    <div class="column col-sm small" style="background-color:#ccc;">
-      <h2>Id04</h2>
-      <h3>3:00</h3>
-      <h3>4:00</h3>
-
-        <p>Joe</p>
-        <p>Clare</p>
-
-    </div>
-
-    <div class="column col-sm small" style="background-color:#ccc;">
-      <h2>Id05</h2>
-      <h3>3:00</h3>
-      <h3>4:00</h3>
-    </div>
-  </section> -->
-
-<!-- Table version -->
-  <h1 class="table-responsive text-center"> Times </h1>
-
-  <table class="table">
-    <tbody>
-      <tr>
-        <th scope="col-sm small">Names</th>
-        <td>Id01</td>
-        <td>Id02</td>
-        <td>Id03</td>
-        <td>Id04</td>
-        <td>Id05</td>
-
-
-      <tr>
-        <th scope="col-sm small"></th>
-        <td>4:00PM</td>
-        <td>5:00PM</td>
-        <td>6:00PM</td>
-        <td>7:00PM</td>
-        <td>8:00PM</td>
-
-      </tr>
-      <tr>
-        <th scope="col-sm small"></th>
-        <td>4:30PM</td>
-        <td>5:30PM</td>
-        <td>6:30PM</td>
-        <td>7:30PM</td>
-        <td>8:30PM</td>
-
-      </tr>
-      <tr>
-        <th scope="row">Mike</th>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-      </tr>
-
-      <tr>
-        <th scope="row">Bill</th>
-        <td><img src="/images/check.png" alt="" style="width:20px; height:auto;"></td>
-        <td><img src="/images/check.png" alt="" style="width:20px; height:auto;"></td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-      </tr>
-    </tbody>
-  </table>
+  <section>
+    <% for(var _attendee in attendees) {%>
+      <p><%= attendees[_attendee].name %></p>
+    <% } %>
+  </section>
 
 <!-- add email and name -->
-  <form id="attendees-input-id" class="align-items-center constainer">
-    <div class="form-group row">
-      <div class="col-sm-6">
-        <label for="attendees-name-id">name</label>
-        <input class="form-control" id="attendees-name-id" type="text">
+    <form id="attendees-input-id" class="align-items-center constainer">
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <label for="attendees-name-id">name</label>
+          <input class="form-control" id="attendees-name-id" type="text">
+        </div>
+        <div class="col-sm-6">
+          <label for="attendees-email-id">email</label>
+          <input class="form-control" id="attendees-email-id" type="text">
+        </div>
       </div>
-      <div class="col-sm-6">
-        <label for="attendees-email-id">email</label>
-        <input class="form-control" id="attendees-email-id" type="text">
-      </div>
-    </div>
-    <button id="atendees-submit" type="submit" class="btn btn-primary">Submit</button>
-  </form>
-
-
+      <button id="atendees-submit" type="submit" class="btn btn-primary">Submit</button>
+    </form>
 
   </body>
 
