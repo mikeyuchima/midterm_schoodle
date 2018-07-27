@@ -96,14 +96,16 @@ app.listen(PORT, () => {
 });
 
 app.post("/create", (req, res) => {
+  let data = req.body;
+  console.log('intitial', data);
   knex('events').insert({
-      host: req.body.host,
-      title: req.body.title,
-      description: req.body.description,
+      host: data.host,
+      title: data.title,
+      description: data.description,
       hash: 'thisisahash',
-      location: req.body.location
-  }).returning('*')
-    .then(data => {
+      location: data.location
+  }).then(() => {
+      console.log(data);
       return knex('times').insert({
         start_time: data.start,
         end_time: data.end,

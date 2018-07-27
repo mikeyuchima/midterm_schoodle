@@ -25,20 +25,19 @@
   <body>
     <!-- Top Nav Bar -->
     <% include ./partials/_header %>
-
-  <form class = "container" action="/create" method="POST">
-    <input type="text" id="event_title" name="title" class="form-control col-md-8" placeholder="What is your event's name?"/>
-    <input type="text" id="event_host" name="host"class="form-control form-control-sm col-md-8" placeholder="Who's Hosting?">
-    <input type="text" id="event_location" name="location"class="form-control form-control-sm" placeholder="Where is it?">
-    <textarea class="form-control form-control-sm" id="event_description" name="description"rows="3" placeholder="Event Details"></textarea>
-    <input id="times-date" type="date" name="date" placeholder:"date">
-    <input id="times-start" type="time" name="start" min="00:00" max="24:00" required pattern="[0-9]{2}:[0-9]{2}" placeholder="start : time">
-    <span class="validity"></span>
-    <input id="times-end" type="time" name="end" min="00:00" max="24:00" required pattern="[0-9]{2}:[0-9]{2}" placeholder="end:time">
-    <input id = "submit-times-button" for="times-end" type="submit" value="Add Time">
-    <button type="submit"> Submit </button>
+    <form class = "container" action="/create" method="POST">
+      <input type="text" id="event_title" name="title" class="form-control col-md-8" placeholder="What is your event's name?">
+      <input type="text" id="event_host" name="host"class="form-control form-control-sm col-md-8" placeholder="Who's Hosting?">
+      <input type="text" id="event_location" name="location"class="form-control form-control-sm" placeholder="Where is it?">
+      <textarea class="form-control form-control-sm" id="event_description" name="description"rows="3" placeholder="Event Details"></textarea>
+      <input id="times-date" type="date" name="date" placeholder:"date">
+      <input id="times-start" type="time" name="start" min="00:00" max="24:00" required pattern="[0-9]{2}:[0-9]{2}" placeholder="start : time">
+      <input id="times-end" type="time" name="end" min="00:00" max="24:00" required pattern="[0-9]{2}:[0-9]{2}" placeholder="end:time">
+      <input id = "submit-times-button" for="times-end" type="submit" value="Add Time">
+      <button type="submit"> Submit </button>
+    </form>
   </body>
-<footer>
-  <% include ./partials/_footer %>
-</footer>
+  <footer>
+    <% include ./partials/_footer %>
+  </footer>
 </html>
