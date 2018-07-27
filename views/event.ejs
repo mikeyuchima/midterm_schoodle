@@ -12,12 +12,10 @@
 
   <body>
     <div class="table-responsive text-center">
-      <h1><%= title %></h1>
-      <h2>by: <%= host%></h2>
-      <h2><%= location%></h2>
+      <h1><%= events[0].title %></h1>
+      <h2>by <%= events[0].host%></h2>
+      <h2><%= events[0].location%></h2>
     </div>
-
-
 
     <h1 class="table-responsive text-center"> Times </h1>
 
@@ -27,26 +25,26 @@
   <thead>
     <tr>
       <th scope="col"></th>
-   <% for(var _timeSlot in timeSlots) { %>
-      <th scope="col"><%= "  " + timeSlots[_timeSlot].start_time + " - " + timeSlots[_timeSlot].end_time + "  " %></th>
+   <% for(var _timeSlot in times) { %>
+      <th scope="col"><%= "  " + times[_timeSlot].start_time + " - " + times[_timeSlot].end_time + "  " %></th>
       <% } %>
     </tr>
   </thead>
   <tbody>
+    <% if (attendees) { %>
     <% for(var _attendee in attendees) {%>
     <tr>
       <th scope="row"><%= attendees[_attendee].name %></th>
-        <% for(let i = 0; i < timeSlots.length; i++){%>
-
-            <td> <button
-               id="change-button-colour"
-              onclick="buttonAlternate()">Yes</button> </td>
+        <% for(let i = 0; i < times.length; i++){%>
+            <% if(attendees[_attendee].times_available.includes(times[i].id)) { %>
+              <td> Yes </td>
+            <% } else {%>
+              <td> NO </td>
+            <% } %>
       <% } %>
     </tr>
     <% } %>
-
-
-
+  <% } %>
   </tbody>
 </table>
 
@@ -74,11 +72,6 @@ function buttonAlternate() {
     </div>
     <button id="atendees-submit" type="submit" class="btn btn-primary">Submit</button>
   </form>
-
-
-
-
-
   </body>
 
 

@@ -14,6 +14,8 @@ const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
+var shortid = require('shortid');
+
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 
@@ -97,48 +99,66 @@ app.get("/", (req, res) => {
 //   });
 // });
 
+app.post("/create", (req, res) => {
+ let data = req.body;
+ let hash = shortid.generate();
+ console.log(hash);
+ knex('events').insert({
+     host: data.host,
+     title: data.title,
+     description: data.description,
+     hash: hash,
+     location: data.location
+ }).returning('id')
+ .then(([id]) => {
+     return knex('times').insert({
+       start_time: data.start,
+       end_time: data.end,
+       date: data.date,
+       event_id: id
+     })
+ })
+ res.redirect("/create");
+});
+
 app.get("/event/:hash", async (req, res) => {
 
   let templateVars = {};
 
-  templateVars.event = await knex
-    .select()
-    .from("events")
-    .limit(1)
-    .where("hash", '=', req.params.hash)
+  templateVars.events = await knex
+  .select()
+  .from("events")
+  .limit(1)
+  .where("hash", '=', req.params.hash)
 
   templateVars.times = await knex
-    .select()
-    .from("times")
-    .where('times.event_id', '=', templateVars.event[0].id)
-
+  .select()
+  .from("times")
+  .where('times.event_id', '=', templateVars.events[0].id)
 
   templateVars.attendees = await knex
-      .select()
-      .from("attendees")
-      .where('attendees.event_id', '=', templateVars.event[0].id)
+  .select()
+  .from("attendees")
+  .where('attendees.event_id', '=', templateVars.events[0].id)
 
   try {
     for(var person in templateVars.attendees){
       await knex
-        .select()
-        .from('attendees_times')
-        .innerJoin('times', 'attendees_times.time_id', 'times.id')
-        .where('attendees_times.attendee_id','=', templateVars.attendees[person].id)
-        .then((availabilities) => {
-          templateVars.attendees[person].times_available = [];
+      .select()
+      .from('attendees_times')
+      .innerJoin('times', 'attendees_times.time_id', 'times.id')
+      .where('attendees_times.attendee_id','=', templateVars.attendees[person].id)
+      .then((availabilities) => {
+        templateVars.attendees[person].times_available = [];
 
-          for(var availability in availabilities){
-            console.log('>>', availabilities[availability]);
-            templateVars.attendees[person].times_available.push(availabilities[availability]);
-          }
+        for(var availability in availabilities){
+          templateVars.attendees[person].times_available.push(availabilities[availability].id);
+        }
       });
     }
   } catch(e) {
     console.log(e)
   }
-
-  console.log(templateVars.attendees[0].times_available);
 
   res.render('event', templateVars);
 });
@@ -155,23 +175,4 @@ app.get("/event", (req, res) => {
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
-});
-
-app.post("/create", (req, res) => {
-  knex('events').insert({
-      host: req.body.host,
-      title: req.body.title,
-      description: req.body.description,
-      hash: 'thisisahash',
-      location: req.body.location
-  }).returning('*')
-    .then(data => {
-      return knex('times').insert({
-        start_time: data.start,
-        end_time: data.end,
-        date: data.date,
-        event_id: data.id
-      })
-  })
-  res.redirect("/create");
 });
