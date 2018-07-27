@@ -3,22 +3,6 @@
   <head>
     <title>Events</title>
 
-    <!--                bootstrap                -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
-<!--                  vanilla style sheets           -->
-
-    <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
-    <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
-    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
-
-    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-    <script type="text/javascript" src="/scripts/app.js"></script>
-
 
 <!--        header partial            -->
     <% include ./partials/_header %>
@@ -26,60 +10,74 @@
 
 <!-- welcome message -->
 
-<body>
-  <section class="container">
-    <h1><%= title %></h1>
-    <h2>by <%= host%></h2>
-    <h2><%= location%></h2>
-    <p><%= timeSlots[0].date%> </p>
-  </section>
-
-
-
-<!--       column  version     -->
-
-   <div class="table-responsive text-center">
-    <h1> Times </h1>
-
-  <section class="container row text-center">
-    <div id="column" class="column col-sm small">
-      <h3>Start Time</h3>
-      <h3>End Time</h3>
+  <body>
+    <div class="table-responsive text-center">
+      <h1><%= title %></h1>
+      <h2>by: <%= host%></h2>
+      <h2><%= location%></h2>
     </div>
 
-    <% for(var _timeSlot in timeSlots) { %>
-      <% if(_timeSlot % 2 == 0)  { %>
-      <div id="column" class="column col-sm small" style="background-color:#bbb;">
-      <% } else { %>
-      <div id="column" class="column col-sm small" style="background-color:#ccc;">
+
+
+    <h1 class="table-responsive text-center"> Times </h1>
+
+<!-- table -->
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+   <% for(var _timeSlot in timeSlots) { %>
+      <th scope="col"><%= "  " + timeSlots[_timeSlot].start_time + " - " + timeSlots[_timeSlot].end_time + "  " %></th>
       <% } %>
-      <h3><%= timeSlots[_timeSlot].start_time%></h3>
-      <h3><%= timeSlots[_timeSlot].end_time %></h3>
-      </div>
-    <% } %>
-
-  </section>
-
-  <section>
+    </tr>
+  </thead>
+  <tbody>
     <% for(var _attendee in attendees) {%>
-      <p><%= attendees[_attendee].name %></p>
+    <tr>
+      <th scope="row"><%= attendees[_attendee].name %></th>
+        <% for(let i = 0; i < timeSlots.length; i++){%>
+
+            <td> <button
+               id="change-button-colour"
+              onclick="buttonAlternate()">Yes</button> </td>
+      <% } %>
+    </tr>
     <% } %>
-  </section>
+
+
+
+  </tbody>
+</table>
+
+
+
+<script>
+function buttonAlternate() {
+    document.getElementById("change-button-colour").style.color = "red";
+    console.log("button pressed")
+}
+</script>
+
 
 <!-- add email and name -->
-    <form id="attendees-input-id" class="align-items-center constainer">
-      <div class="form-group row">
-        <div class="col-sm-6">
-          <label for="attendees-name-id">name</label>
-          <input class="form-control" id="attendees-name-id" type="text">
-        </div>
-        <div class="col-sm-6">
-          <label for="attendees-email-id">email</label>
-          <input class="form-control" id="attendees-email-id" type="text">
-        </div>
+  <form id="attendees-input-id" class="align-items-center constainer">
+    <div class="form-group row">
+      <div class="col-sm-6">
+        <label for="attendees-name-id">name</label>
+        <input class="form-control" id="attendees-name-id" type="text">
       </div>
-      <button id="atendees-submit" type="submit" class="btn btn-primary">Submit</button>
-    </form>
+      <div class="col-sm-6">
+        <label for="attendees-email-id">email</label>
+        <input class="form-control" id="attendees-email-id" type="text">
+      </div>
+    </div>
+    <button id="atendees-submit" type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+
+
+
 
   </body>
 
