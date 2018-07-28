@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-const PORT        = process.env.PORT || 8080;
+const PORT        = process.env.PORT || 3000;
 const ENV         = process.env.ENV || "development";
 const express     = require("express");
 const bodyParser  = require("body-parser");
@@ -39,62 +39,118 @@ app.use(express.static("public"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
-// app.use("/events/", eventsRoutes);
 
 // Home page
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get("/event/:hash", (req, res) => {
+//------------------------------------------------------------
+
+// Event
+app.get("/event/:hash", async (req, res) => {
 
   let templateVars = {};
 
-  knex
+  templateVars.events = await knex
   .select()
   .from("events")
   .limit(1)
   .where("hash", '=', req.params.hash)
-  .then((event) => {
-    templateVars = event[0];
 
-    Promise.all([
-      knex
+  templateVars.times = await knex
+  .select()
+  .from("times")
+  .where('times.event_id', '=', templateVars.events[0].id)
+
+  templateVars.attendees = await knex
+  .select()
+  .from("attendees")
+  .where('attendees.event_id', '=', templateVars.events[0].id)
+
+  try {
+    for(var person in templateVars.attendees){
+      await knex
       .select()
-      .from("times")
-      .where('times.event_id', '=', event[0].id)
-      .then((times) => {
-        templateVars.timeSlots = [];
-        for(var time in times){ templateVars.timeSlots.push(times[time]); }
-      }),
-      knex
-      .select()
-      .from("attendees")
-      .where('attendees.event_id', '=', event[0].id)
-      .then((attendees) => {
-        templateVars.attendees = [];
-        for(var person in attendees){ templateVars.attendees.push(attendees[person]); }
-      })
-    ])
-    .then(() => {
-      console.log(templateVars);
-      res.render('event', templateVars);
-    });
-  });
+      .from('attendees_times')
+      .innerJoin('times', 'attendees_times.time_id', 'times.id')
+      .where('attendees_times.attendee_id','=', templateVars.attendees[person].id)
+      .then((availabilities) => {
+        templateVars.attendees[person].times_available = [];
+        templateVars.currentEvent = templateVars.events[0].id;
+        console.log('>>> ', templateVars.currentEvent);
+
+        for(var availability in availabilities){
+          templateVars.attendees[person].times_available.push(availabilities[availability].id);
+        }
+      });
+    }
+  } catch(e) {
+    console.log(e)
+  }
+  res.render('event', templateVars);
 });
+
+app.post("/event/:path", async (req, res) => {
+  let y = req.body;
+  let x = req.body;
+  console.log(y)
+  console.log('poop', x);
+  let _name = req.body.name;
+  let _event_id = req.body.event_id;
+  let _email = 'this@email.com';
+  let timez = req.body.timeSlot;
+  let path = req.params.path;
+
+  knex('attendees').insert({
+    name: _name,
+    email: _email,
+    event_id: _event_id
+  }).returning('*')
+  .then(([attendees]) => {
+
+    console.log('attempting to insert attendee time');
+
+    for(var time in timez){
+      console.log(">>> ", timez[time]);
+      knex('attendees_times').insert({
+        attendee_id: attendees.id,
+        time_id: timez[time]
+      }).returning('*')
+      .then((data) => {
+          res.redirect('/');
+      })
+    }
+  })
+});
+
+//------------------------------------------------------------
 
 // Create Event
 app.get("/create", (req, res) => {
   res.render("create");
 });
 
-// Event
-app.get("/event", (req, res) => {
-  res.render("event");
-});
-
-app.listen(PORT, () => {
-  console.log("Example app listening on port " + PORT);
+app.post("/create", (req, res) => {
+ let data = req.body;
+ let hash = shortid.generate();
+ console.log(hash);
+ knex('events').insert({
+     host: data.host,
+     title: data.title,
+     description: data.description,
+     hash: hash,
+     location: data.location
+ }).returning('id')
+ .then(([id]) => {
+     return knex('times').insert({
+       start_time: data.start,
+       end_time: data.end,
+       date: data.date,
+       event_id: id
+     })
+ })
+ res.redirect("/create");
 });
 
 app.post("/create", (req, res) => {
@@ -121,4 +177,8 @@ app.post("/create", (req, res) => {
       })
     }
   })
+});
+
+app.listen(PORT, () => {
+  console.log("Example app listening on port " + PORT);
 });
