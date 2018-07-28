@@ -14,6 +14,8 @@ const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
+const shortid = require('shortid');
+
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 
@@ -97,21 +99,26 @@ app.listen(PORT, () => {
 
 app.post("/create", (req, res) => {
   let data = req.body;
-  console.log('intitial', data);
+  let hash = shortid.generate();
+  console.log(hash);
+  console.log(data)
   knex('events').insert({
       host: data.host,
       title: data.title,
       description: data.description,
-      hash: 'thisisahash',
+      hash: hash,
       location: data.location
-  }).then(() => {
-      console.log(data);
-      return knex('times').insert({
-        start_time: data.start,
-        end_time: data.end,
+  }).returning('id')
+  .then(([id]) => {
+    for (var i = 0; i < data.start.length; i++) {
+      knex('times').insert({
+        start_time: data.start[i],
+        end_time: data.end[i],
         date: data.date,
-        event_id: data.id
+        event_id: id
+      }).then(() => {
+        console.log('DONEE')
       })
+    }
   })
-  res.redirect("/create");
 });
