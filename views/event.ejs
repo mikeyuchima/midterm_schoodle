@@ -3,7 +3,6 @@
   <head>
     <title>Events</title>
 
-
 <!--        header partial            -->
     <% include ./partials/_header %>
   </head>
@@ -20,8 +19,8 @@
     <h1 class="table-responsive text-center"> Times </h1>
 
 <!-- table -->
-
-<table class="table">
+<section class="container">
+<table class="table table-striped">
   <thead>
     <tr>
       <th scope="col"></th>
@@ -32,58 +31,43 @@
   </thead>
   <tbody>
     <% if (attendees) { %>
-    <% for(var _attendee in attendees) {%>
-    <tr>
-      <th scope="row"><%= attendees[_attendee].name %></th>
+      <% for(var _attendee in attendees) {%>
+      <tr>
+        <th scope="row"><%= attendees[_attendee].name %></th>
         <% for(let i = 0; i < times.length; i++){%>
-            <% if(attendees[_attendee].times_available.includes(times[i].id)) { %>
-              <td> Yes </td>
-            <% } else {%>
-              <td> NO </td>
-            <% } %>
+          <% if(attendees[_attendee].times_available.includes(times[i].id)) { %>
+          <td> Yes </td>
+          <% } else {%>
+          <td> NO </td>
+          <% } %>
+        <% } %>
+      </tr>
       <% } %>
-    </tr>
     <% } %>
-  <% } %>
+    <form id='submit_name' action='/event/:hash' method='post'>
+    <input type='hidden' name='event_id' value='<%= events[0].id %>'>
+    <tr>
+      <td>
+        <input class="form-control" name='name' id="attendees-name-id" type="text" type='username' placeholder='Your name'/>
+      </td>
+      <% for(let i = 0; i < times.length; i++){%>
+      <td>
+        <input type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'>
+      </td>
+      <% } %>
+      <td>
+      <button> Submit </button>
+      </td>
+    </tr>
+          </form>
+
   </tbody>
 </table>
-
-
-
-<script>
-function buttonAlternate() {
-    document.getElementById("change-button-colour").style.color = "red";
-    console.log("button pressed")
-}
-</script>
-
-
-<!-- add email and name -->
-  <form id="attendees-input-id" class="align-items-center constainer">
-    <div class="form-group row">
-      <div class="col-sm-6">
-        <label for="attendees-name-id">name</label>
-        <input class="form-control" id="attendees-name-id" type="text">
-      </div>
-      <div class="col-sm-6">
-        <label for="attendees-email-id">email</label>
-        <input class="form-control" id="attendees-email-id" type="text">
-      </div>
-    </div>
-    <button id="atendees-submit" type="submit" class="btn btn-primary">Submit</button>
-  </form>
-  </body>
-
-
-
-
-
-
+</section>
 
   <!--       footer partial          -->
 <footer>
   <% include ./partials/_footer %>
 </footer>
-
 
 </html>
