@@ -68,6 +68,9 @@ app.get("/event/:hash", async (req, res) => {
   .from("attendees")
   .where('attendees.event_id', '=', templateVars.events[0].id)
 
+  templateVars.date = templateVars.times[0].date.toISOString().slice(0, 10);
+
+
   try {
     for(var person in templateVars.attendees){
       await knex
