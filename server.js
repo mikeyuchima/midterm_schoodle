@@ -78,8 +78,6 @@ app.get("/event/:hash", async (req, res) => {
       .then((availabilities) => {
         templateVars.attendees[person].times_available = [];
         templateVars.currentEvent = templateVars.events[0].id;
-        console.log('>>> ', templateVars.currentEvent);
-
         for(var availability in availabilities){
           templateVars.attendees[person].times_available.push(availabilities[availability].id);
         }
@@ -92,14 +90,16 @@ app.get("/event/:hash", async (req, res) => {
 });
 
 app.post("/event/:path", async (req, res) => {
-  let y = req.body;
-  let x = req.body;
-  console.log(y)
-  console.log('poop', x);
   let _name = req.body.name;
   let _event_id = req.body.event_id;
   let _email = 'this@email.com';
-  let timez = req.body.timeSlot;
+
+  let times = req.body.timeSlot;
+  if(typeof times === 'string'){
+    times = [times];
+  }
+
+  console.log('time ids: ', times);
   let path = req.params.path;
 
   knex('attendees').insert({
@@ -108,17 +108,14 @@ app.post("/event/:path", async (req, res) => {
     event_id: _event_id
   }).returning('*')
   .then(([attendees]) => {
-
-    console.log('attempting to insert attendee time');
-
-    for(var time in timez){
-      console.log(">>> ", timez[time]);
+    for(var time in times){
       knex('attendees_times').insert({
         attendee_id: attendees.id,
-        time_id: timez[time]
+        time_id: times[time]
       }).returning('*')
       .then((data) => {
-          res.redirect('/');
+        console.log('Data: ', data);
+        res.redirect('/');
       })
     }
   })
@@ -134,23 +131,25 @@ app.get("/create", (req, res) => {
 app.post("/create", (req, res) => {
  let data = req.body;
  let hash = shortid.generate();
- console.log(hash);
  knex('events').insert({
-     host: data.host,
-     title: data.title,
-     description: data.description,
-     hash: hash,
-     location: data.location
+   host: data.host,
+   title: data.title,
+   description: data.description,
+   hash: hash,
+   location: data.location
  }).returning('id')
  .then(([id]) => {
-     return knex('times').insert({
-       start_time: data.start,
-       end_time: data.end,
+   for (var i = 0; i < data.start.length; i++) {
+     knex('times').insert({
+       start_time: data.start[i],
+       end_time: data.end[i],
        date: data.date,
        event_id: id
+     }).then((data) => {
+      res.redirect('/');
      })
+   }
  })
- res.redirect("/create");
 });
 
 app.post("/create", (req, res) => {
