@@ -184,3 +184,46 @@ app.post("/create", (req, res) => {
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
+
+
+//new edit add events
+app.post("/event/:hash/edit", (req, res) => {
+  console.log("button is now working");
+
+  let times = req.body.timeSlot;
+  if(typeof times === 'string'){
+    times = [times];
+  }
+
+  let _namebutton = req.body.submissionButton;
+
+  console.log('name: ', _namebutton);
+  console.log('time ids: ', times);
+  let path = req.params.path;
+
+    // let _body = req.params;
+  // console.log("body", _body);
+
+  // let _name = req.body.name;
+  // let _event_id = req.body.event_id;
+  // let _email = 'this@email.com';
+
+  // knex('attendees').insert({
+  //   name: _name,
+  //   email: _email,
+  //   event_id: _event_id
+  // }).returning('*')
+  // .then(([attendees]) => {
+  //   for(var time in times){
+  //     knex('attendees_times').insert({
+  //       attendee_id: attendees.id,
+  //       time_id: times[time]
+  //     }).returning('*')
+  //     .then((data) => {
+  //       console.log('Data: ', data);
+  //       res.redirect('/');
+  //     })
+  //   }
+  // })
+
+})
