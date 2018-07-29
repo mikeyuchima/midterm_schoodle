@@ -13,19 +13,32 @@
     <div class="table-responsive text-center">
       <h1><%= events[0].title %></h1>
       <h2>by <%= events[0].host%></h2>
+    </div>
+
+    <div>
+      <script>
+
+
+      </script>
+
+
+      <h2><%= date %></h2>
+
       <h2><%= events[0].location%></h2>
+
+      <h2><%= events[0].description%></h2>
     </div>
 
     <h1 class="table-responsive text-center"> Times </h1>
 
 <!-- table -->
-<section class="container">
+<!-- <section class="container"> -->
 <table class="table table-striped">
   <thead>
     <tr>
-      <th scope="col"></th>
+      <th scope="col" class = 'text-center'></th>
    <% for(var _timeSlot in times) { %>
-      <th scope="col"><%= "  " + times[_timeSlot].start_time + " - " + times[_timeSlot].end_time + "  " %></th>
+      <th scope="col" class = 'text-center'><%= "  " + times[_timeSlot].start_time + " - " + times[_timeSlot].end_time + "  " %></th>
       <% } %>
     </tr>
   </thead>
@@ -33,37 +46,46 @@
     <% if (attendees) { %>
       <% for(var _attendee in attendees) {%>
       <tr>
+
+        <form method='delete' action="/event/edit">
         <th scope="row"><%= attendees[_attendee].name %></th>
         <% for(let i = 0; i < times.length; i++){%>
           <% if(attendees[_attendee].times_available.includes(times[i].id)) { %>
-          <td> Yes </td>
+          <td class = 'text-center'> <input checked type='checkbox' value='<%= attendees[_attendee].name %>'> </td>
           <% } else {%>
-          <td> NO </td>
+
+          <td class = 'text-center'> <input type='checkbox' value='<%= attendees[_attendee].name %>'> </td>
           <% } %>
         <% } %>
+        <td> <button type="submit" method='post' action="/event/edit" value='<%= attendees[_attendee].id %>'> Edit  </button> </td>
+      </form>
+
       </tr>
       <% } %>
     <% } %>
     <form id='submit_name' action='/event/:hash' method='post'>
-    <input type='hidden' name='event_id' value='<%= events[0].id %>'>
+    <input value='<%= events[0].id %>'>
+
     <tr>
-      <td>
+
+      <th>
         <input class="form-control" name='name' id="attendees-name-id" type="text" type='username' placeholder='Your name'/>
-      </td>
+      </th>
       <% for(let i = 0; i < times.length; i++){%>
-      <td>
-        <input type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'>
+      <td class = 'text-center'>
+        <input class = 'text-center' type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= attendees[_attendee].name %>'>
       </td>
       <% } %>
       <td>
       <button> Submit </button>
       </td>
+
     </tr>
           </form>
 
   </tbody>
 </table>
-</section>
+<!-- </section> -->
 
   <!--       footer partial          -->
 <footer>
