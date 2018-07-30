@@ -5,15 +5,34 @@
 
 
 
+
+
+
 <!--        header partial            -->
     <% include ./partials/_header %>
   </head>
 
 <!-- welcome message -->
   <body>
-    <div class = "container col-centered">
-      <h1> Welcome to Scoodle</h1>
-      <p> Scroodle is an app that... </p>
+
+
+
+    <div class="background-wrap">
+      <video id="video-bg-elem" preload="auto" loop="true" autoplay="true" muted="muted">
+        <source src="/images/bg.mp4" type="video/mp4">
+          Video not supported
+      </video>
+    </div>
+
+
+
+
+
+    <div id="welcome-message" class = "text-center align-middle">
+
+      <h1 id="welcome-text" id="scoodle-colour"> Welcome to Scoodle</h1>
+      <p id="welcome-text"> Your adventure awaits... </p>
+
     </div>
   </body>
 
