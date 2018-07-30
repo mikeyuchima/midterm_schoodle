@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-const PORT        = process.env.PORT || 3000;
+const PORT        = process.env.PORT || 8080;
 const ENV         = process.env.ENV || "development";
 const express     = require("express");
 const bodyParser  = require("body-parser");
@@ -19,6 +19,7 @@ const moment = require('moment');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
+const schoodleRoutes = require("./routes/schoodle");
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -135,43 +136,8 @@ app.get("/create", (req, res) => {
   res.render("create");
 });
 
-app.post('/create', (req, res) => {
-  let data = req.body;
-  let hash = shortid.generate();
-  console.log(hash);
-  console.log(data)
-  knex('events').insert({
-      host: data.host,
-      title: data.title,
-      description: data.description,
-      hash: hash,
-      location: data.location
-  }).returning('id')
-  .then(([id]) => {
-    if (Array.isArray(data.start)) {
-      for (var i = 0; i < data.start.length; i++) {
-        knex('times').insert({
-          start_time: data.start[i],
-          end_time: data.end[i],
-          date: data.date,
-          event_id: id
-        }).then(() => {
-          console.log('DONE')
-        })
-      }
-    } else {
-      knex('times').insert({
-        start_time: data.start,
-        end_time: data.end,
-        date: data.date,
-        event_id: id
-      }).then(() => {
-        console.log('DONE')
-      })
-    }
-  })
-  res.redirect('/event/' + hash);
-});
+
+app.post('/create', schoodleRoutes(knex));
 
 //------------------------------------------------------------
 
