@@ -40,6 +40,7 @@
     <% if (attendees) { %>
       <% for(var _attendee in attendees) {%>
       <tr>
+<!-- edit button -->
         <form id='submit_edit' action='/event/:hash/edit' method='post'>
           <th scope="row"><%= attendees[_attendee].name %></th>
           <% for(let i = 0; i < times.length; i++){%>
@@ -59,6 +60,8 @@
       </tr>
       <% } %>
     <% } %>
+
+<!-- submission button do not touch -->
     <form id='submit_name' action='/event/:hash' method='post'>
       <input type='hidden' name='event_id' value='<%= events[0].id %>'>
       <tr>

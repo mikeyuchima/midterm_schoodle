@@ -5,19 +5,43 @@
 
 
 
+
+
+
 <!--        header partial            -->
     <% include ./partials/_header %>
   </head>
 
 <!-- welcome message -->
   <body>
-    <div class = "container col-centered">
+
+
+
+
+    <div class="background-wrap">
+      <video id="video-bg-elem" preload="auto" loop="true" autoplay="true" muted="muted">
+        <source src="/images/bg.mp4" type="video/mp4">
+          Video not supported
+      </video>
+    </div>
+
+
+
+
+
+    <div id="welcome-message" class = "text-center align-middle">
+
+      <h1 id="welcome-text" id="scoodle-colour"> Welcome to Scoodle</h1>
+      <p id="welcome-text"> Your adventure awaits... </p>
+
+
+<!--    <div class = "container col-centered">
       <h1> Welcome to Scoodle!</h1>
       <div class="card">
         <div class="card-body shadow p-3 mb-5 bg-white rounded">
           <h6>Scroodle is an app that helps you share upcoming events with family, friends and colleagues. Let them vote for the best time that suits them!</h6>
         </div>
-      </div>
+      </div> -->
     </div>
   </body>
 
