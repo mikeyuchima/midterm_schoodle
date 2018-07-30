@@ -6,43 +6,37 @@
 <!--        header partial            -->
     <% include ./partials/_header %>
   </head>
-
-<!-- welcome message -->
-
   <body>
-    <div class="table-responsive text-center">
-      <h1><%= events[0].title %></h1>
-      <h2>by <%= events[0].host%></h2>
+    <div class="container center-block">
+      <h1><%= events[0].title %><button type="button" id="link" class="btn btn-default btn-sm" value="ABC" style="margin: 0px 20px;"><span class="glyphicon glyphicon-link"></span> Link</button></h1>
+      <h3 style="font-style: italic">by <%= events[0].host%></h3>
     </div>
-
-    <div>
-      <script>
-
-
-      </script>
-
-
-      <h2><%= date %></h2>
-
-      <h2><%= events[0].location%></h2>
-
-      <h2><%= events[0].description%></h2>
-    </div>
-
-    <h1 class="table-responsive text-center"> Times </h1>
+    <section class="container center-block">
+      <div class="d-flex">
+        <h3 class="p-2"><%= date %></h3>
+        <h3 class="ml-auto p-2"><%= events[0].location%></h3>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h6><%= events[0].description%></h6>
+        </div>
+      </div>
+    </section>
 
 <!-- table -->
-<!-- <section class="container"> -->
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col" class = 'text-center'></th>
-   <% for(var _timeSlot in times) { %>
-      <th scope="col" class = 'text-center'><%= "  " + times[_timeSlot].start_time + " - " + times[_timeSlot].end_time + "  " %></th>
-      <% } %>
-    </tr>
-  </thead>
-  <tbody>
+<section class="container" style="padding-top: 50px;">
+  <h2 class="center-block"> Time Options</h2>
+  <table class="table table-bordered table-striped table-sm" >
+    <thead class='thead-dark'>
+      <tr>
+        <th scope="col" class = 'text-center'></th>
+          <% for(var _timeSlot in times) { %>
+          <th scope="col" class = 'text-center'><%= "  " + times[_timeSlot].start_time + " - " + times[_timeSlot].end_time + "  " %></th>
+          <% } %>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
     <% if (attendees) { %>
       <% for(var _attendee in attendees) {%>
       <tr>
@@ -51,13 +45,17 @@
           <th scope="row"><%= attendees[_attendee].name %></th>
           <% for(let i = 0; i < times.length; i++){%>
             <% if(attendees[_attendee].times_available.includes(times[i].id)) { %>
-            <td class = 'text-center'> <input checked type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'> </td>
+            <td class = 'text-center'> <input checked type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'>
+            </td>
             <% } else {%>
-
-            <td class = 'text-center'> <input type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'> </td>
+            <td class = 'text-center'><input type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'></td>
             <% } %>
           <% } %>
-          <td> <button name='submissionButton' value='<%= attendees[_attendee].id %>'> Edit  </button> </td>
+          <td>
+            <div "button-wrapper btn-fill-space">
+              <button name='submissionButton' value='<%= attendees[_attendee].id %>' class="btn btn-default btn-sm btn-block"> Edit </button>
+            </div>
+          </td>
         </form>
       </tr>
       <% } %>
@@ -76,17 +74,13 @@
         </td>
         <% } %>
         <td>
-          <button> Submit </button>
+          <button class="btn btn-light btn-block"> Submit </button>
         </td>
       </tr>
     </form>
-<!-- never touch above submission button -->
-
-
-
-  </tbody>
-</table>
-<!-- </section> -->
+    </tbody>
+  </table>
+</section>
 
   <!--       footer partial          -->
 <footer>

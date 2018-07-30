@@ -15,6 +15,7 @@ const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
 const shortid = require('shortid');
+const moment = require('moment');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
@@ -68,8 +69,7 @@ app.get("/event/:hash", async (req, res) => {
   .from("attendees")
   .where('attendees.event_id', '=', templateVars.events[0].id)
 
-  templateVars.date = templateVars.times[0].date.toISOString().slice(0, 10);
-
+  templateVars.date = moment(templateVars.times[0].date.toISOString().slice(0, 10)).format('LL');
 
   try {
     for(var person in templateVars.attendees){
@@ -92,7 +92,7 @@ app.get("/event/:hash", async (req, res) => {
   res.render('event', templateVars);
 });
 
-app.post("/event/:path", async (req, res) => {
+app.post("/event/:hash", async (req, res) => {
   let _name = req.body.name;
   let _event_id = req.body.event_id;
   let _email = 'this@email.com';
@@ -103,7 +103,7 @@ app.post("/event/:path", async (req, res) => {
   }
 
   console.log('time ids: ', times);
-  let path = req.params.path;
+  let hash = req.params.hash;
 
   knex('attendees').insert({
     name: _name,
@@ -118,10 +118,14 @@ app.post("/event/:path", async (req, res) => {
       }).returning('*')
       .then((data) => {
         console.log('Data: ', data);
-        res.redirect('/');
       })
     }
   })
+  .then(() => {
+    res.redirect(req.get("referer"));
+  })
+
+  // res.redirect('/event/' + hash);
 });
 
 //------------------------------------------------------------
@@ -131,31 +135,7 @@ app.get("/create", (req, res) => {
   res.render("create");
 });
 
-app.post("/create", (req, res) => {
- let data = req.body;
- let hash = shortid.generate();
- knex('events').insert({
-   host: data.host,
-   title: data.title,
-   description: data.description,
-   hash: hash,
-   location: data.location
- }).returning('id')
- .then(([id]) => {
-   for (var i = 0; i < data.start.length; i++) {
-     knex('times').insert({
-       start_time: data.start[i],
-       end_time: data.end[i],
-       date: data.date,
-       event_id: id
-     }).then((data) => {
-      res.redirect('/');
-     })
-   }
- })
-});
-
-app.post("/create", (req, res) => {
+app.post('/create', (req, res) => {
   let data = req.body;
   let hash = shortid.generate();
   console.log(hash);
@@ -168,23 +148,77 @@ app.post("/create", (req, res) => {
       location: data.location
   }).returning('id')
   .then(([id]) => {
-    for (var i = 0; i < data.start.length; i++) {
+    if (Array.isArray(data.start)) {
+      for (var i = 0; i < data.start.length; i++) {
+        knex('times').insert({
+          start_time: data.start[i],
+          end_time: data.end[i],
+          date: data.date,
+          event_id: id
+        }).then(() => {
+          console.log('DONE')
+        })
+      }
+    } else {
       knex('times').insert({
-        start_time: data.start[i],
-        end_time: data.end[i],
+        start_time: data.start,
+        end_time: data.end,
         date: data.date,
         event_id: id
       }).then(() => {
-        console.log('DONEE')
+        console.log('DONE')
       })
     }
   })
+  res.redirect('/event/' + hash);
 });
+
+//------------------------------------------------------------
+
+//new edit add events
+app.post("/event/:hash/edit", (req, res) => {
+  let times = req.body.timeSlot;
+  if(typeof times === 'string'){
+    times = [times];
+  }
+
+  if(times) {
+    console.log('Change Times');
+  } else {
+    console.log('Delete Times');
+  }
+
+  let _attendee_id = req.body.submissionButton;
+  let hash = req.params.hash;
+
+  console.log('attendee id: ', _attendee_id);
+  console.log('time ids: ', times);
+
+  knex('attendees_times')
+  .where({ attendee_id: _attendee_id })
+  .del()
+  .then(() =>{
+    for(var time in times){
+      knex('attendees_times').insert({
+        attendee_id: _attendee_id,
+        time_id: times[time]
+      }).returning('*')
+      .then((data) => {
+        console.log('Data: ', data);
+        res.redirect('/');
+      })
+    }
+  })
+  .then(() => {
+    res.redirect(req.get("referer"));
+  })
+})
+
+//------------------------------------------------------------
 
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
-
 
 //new edit add events
 app.post("/event/:hash/edit", (req, res) => {
