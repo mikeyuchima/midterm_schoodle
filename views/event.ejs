@@ -1,90 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Events</title>
 
-<!--        header partial            -->
-    <% include ./partials/_header %>
-  </head>
-  <body>
-    <div class="container center-block">
-      <h1><%= events[0].title %><button type="button" id="link" class="btn btn-default btn-sm" value="ABC" style="margin: 0px 20px;"><span class="glyphicon glyphicon-link"></span> Link</button></h1>
-      <h3 style="font-style: italic">by <%= events[0].host%></h3>
+<head>
+  <title>Events</title>
+
+  <!--        header partial            -->
+  <% include ./partials/_header %>
+</head>
+
+<body>
+  <div class="container center-block">
+    <h1>
+      <%= events[0].title %><button type="button" id="link" class="btn btn-default btn-sm" value="ABC" style="margin: 0px 20px;"><span
+          class="glyphicon glyphicon-link"></span> Link</button></h1>
+    <h3 style="font-style: italic">by
+      <%= events[0].host%>
+    </h3>
+  </div>
+  <section class="container center-block">
+    <div class="d-flex">
+      <h3 class="p-2">
+        <%= date %>
+      </h3>
+      <h3 class="ml-auto p-2">
+        <%= events[0].location%>
+      </h3>
     </div>
-    <section class="container center-block">
-      <div class="d-flex">
-        <h3 class="p-2"><%= date %></h3>
-        <h3 class="ml-auto p-2"><%= events[0].location%></h3>
+    <div class="card">
+      <div class="card-body">
+        <h6>
+          <%= events[0].description%>
+        </h6>
       </div>
-      <div class="card">
-        <div class="card-body">
-          <h6><%= events[0].description%></h6>
-        </div>
-      </div>
-    </section>
+    </div>
+  </section>
 
-<!-- table -->
-<section class="container" style="padding-top: 50px;">
-  <h2 class="center-block"> Time Options</h2>
-  <table class="table table-bordered table-striped table-sm" >
-    <thead class='thead-dark'>
-      <tr>
-        <th scope="col" class = 'text-center'></th>
+  <!-- table -->
+  <section class="container" style="padding-top: 50px;">
+    <h2 class="center-block"> Time Options</h2>
+    <table class="table table-bordered table-striped table-sm">
+      <thead class='thead-dark'>
+        <tr>
+          <th scope="col" class='text-center'></th>
           <% for(var _timeSlot in times) { %>
-          <th scope="col" class = 'text-center'><%= "  " + times[_timeSlot].start_time + " - " + times[_timeSlot].end_time + "  " %></th>
+          <th scope="col" class='text-center'>
+            <%= "  " + times[_timeSlot].start_time + " - " + times[_timeSlot].end_time + "  " %>
+          </th>
           <% } %>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    <% if (attendees) { %>
-      <% for(var _attendee in attendees) {%>
-      <tr>
-<!-- edit button -->
-        <form id='submit_edit' action='/event/:hash/edit' method='post'>
-          <th scope="row"><%= attendees[_attendee].name %></th>
-          <% for(let i = 0; i < times.length; i++){%>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (attendees) { %>
+        <% for(var _attendee in attendees) {%>
+        <tr>
+          <!-- edit button -->
+          <form id='submit_edit' action='/event/:hash/edit' method='post'>
+            <th scope="row">
+              <%= attendees[_attendee].name %>
+            </th>
+            <% for(let i = 0; i < times.length; i++){%>
             <% if(attendees[_attendee].times_available.includes(times[i].id)) { %>
-            <td class = 'text-center'> <input checked type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'>
+            <td class='text-center'> <input checked type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot'
+                value='<%= times[i].id %>'>
             </td>
             <% } else {%>
-            <td class = 'text-center'><input type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'></td>
+            <td class='text-center'><input type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot'
+                value='<%= times[i].id %>'></td>
             <% } %>
-          <% } %>
-          <td>
-            <div "button-wrapper btn-fill-space">
-              <button name='submissionButton' value='<%= attendees[_attendee].id %>' class="btn btn-default btn-sm btn-block"> Edit </button>
-            </div>
-          </td>
-        </form>
-      </tr>
-      <% } %>
-    <% } %>
-
-<!-- submission button do not touch -->
-    <form id='submit_name' action='/event/:hash' method='post'>
-      <input type='hidden' name='event_id' value='<%= events[0].id %>'>
-      <tr>
-        <th>
-          <input class="form-control" name='name' id="attendees-name-id" type="text" type='username' placeholder='Your name'/>
-        </th>
-        <% for(let i = 0; i < times.length; i++){%>
-        <td class = 'text-center'>
-          <input class = 'text-center' type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot' value='<%= times[i].id %>'>
-        </td>
+            <% } %>
+            <td>
+              <div "button-wrapper btn-fill-space">
+                <button name='submissionButton' value='<%= attendees[_attendee].id %>' class="btn btn-default btn-sm btn-block">
+                  Edit </button>
+              </div>
+            </td>
+          </form>
+        </tr>
         <% } %>
-        <td>
-          <button class="btn btn-light btn-block"> Submit </button>
-        </td>
-      </tr>
-    </form>
-    </tbody>
-  </table>
-</section>
+        <% } %>
+
+        <!-- submission button do not touch -->
+        <form id='submit_name' action='/event/:hash' method='post'>
+          <input type='hidden' name='event_id' value='<%= events[0].id %>'>
+          <tr>
+            <th>
+              <input class="form-control" name='name' id="attendees-name-id" type="text" type='username' placeholder='Your name' />
+            </th>
+            <% for(let i = 0; i < times.length; i++){%>
+            <td class='text-center'>
+              <input class='text-center' type='checkbox' class='form-check-input' id='exampleCheck1' name='timeSlot'
+                value='<%= times[i].id %>'>
+            </td>
+            <% } %>
+            <td>
+              <button class="btn btn-light btn-block"> Submit </button>
+            </td>
+          </tr>
+        </form>
+      </tbody>
+    </table>
+  </section>
 
   <!--       footer partial          -->
-<footer>
-  <% include ./partials/_footer %>
-</footer>
+  <footer>
+    <% include ./partials/_footer %>
+  </footer>
 
 </html>
