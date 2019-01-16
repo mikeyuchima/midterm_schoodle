@@ -2,23 +2,23 @@
 
 require('dotenv').config();
 
-const PORT        = process.env.PORT || 8080;
-const ENV         = process.env.ENV || "development";
-const express     = require("express");
-const bodyParser  = require("body-parser");
-const sass        = require("node-sass-middleware");
-const app         = express();
+const PORT = process.env.PORT || 8080;
+const ENV = process.env.ENV || "development";
+const express = require("express");
+const bodyParser = require("body-parser");
+const sass = require("node-sass-middleware");
+const app = express();
 
-const knexConfig  = require("./knexfile");
-const knex        = require("knex")(knexConfig[ENV]);
-const morgan      = require('morgan');
-const knexLogger  = require('knex-logger');
+const knexConfig = require("./knexfile");
+const knex = require("knex")(knexConfig[ENV]);
+const morgan = require('morgan');
+const knexLogger = require('knex-logger');
 
 const shortid = require('shortid');
 const moment = require('moment');
 
 // Seperated Routes for each Resource
-const usersRoutes = require("./routes/users");
+// const usersRoutes = require("./routes/users");
 const schoodleRoutes = require("./routes/schoodle");
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
@@ -30,7 +30,9 @@ app.use(morgan('dev'));
 app.use(knexLogger(knex));
 
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use("/styles", sass({
   src: __dirname + "/styles",
   dest: __dirname + "/public/styles",
@@ -40,7 +42,7 @@ app.use("/styles", sass({
 app.use(express.static("public"));
 
 // Mount all resource routes
-app.use("/api/users", usersRoutes(knex));
+// app.use("/api/users", usersRoutes(knex));
 
 // Home page
 app.get("/", (req, res) => {
@@ -55,40 +57,39 @@ app.get("/event/:hash", async (req, res) => {
   let templateVars = {};
 
   templateVars.events = await knex
-  .select()
-  .from("events")
-  .limit(1)
-  .where("hash", '=', req.params.hash)
+    .select()
+    .from("events")
+    .limit(1)
+    .where("hash", '=', req.params.hash)
 
   templateVars.times = await knex
-  .select()
-  .from("times")
-  .where('times.event_id', '=', templateVars.events[0].id)
+    .select()
+    .from("times")
+    .where('times.event_id', '=', templateVars.events[0].id)
 
   templateVars.attendees = await knex
-  .select()
-  .from("attendees")
-  .where('attendees.event_id', '=', templateVars.events[0].id)
-
+    .select()
+    .from("attendees")
+    .where('attendees.event_id', '=', templateVars.events[0].id)
   templateVars.date = moment(templateVars.times[0].date.toISOString().slice(0, 10)).format('LL');
 
   try {
-    for(var person in templateVars.attendees){
+    for (var person in templateVars.attendees) {
       await knex
-      .select()
-      .from('attendees_times')
-      .innerJoin('times', 'attendees_times.time_id', 'times.id')
-      .where('attendees_times.attendee_id','=', templateVars.attendees[person].id)
-      .then((availabilities) => {
-        templateVars.attendees[person].times_available = [];
-        templateVars.currentEvent = templateVars.events[0].id;
-        for(var availability in availabilities){
-          templateVars.attendees[person].times_available.push(availabilities[availability].id);
-        }
-      });
+        .select()
+        .from('attendees_times')
+        .innerJoin('times', 'attendees_times.time_id', 'times.id')
+        .where('attendees_times.attendee_id', '=', templateVars.attendees[person].id)
+        .then((availabilities) => {
+          templateVars.attendees[person].times_available = [];
+          templateVars.currentEvent = templateVars.events[0].id;
+          for (var availability in availabilities) {
+            templateVars.attendees[person].times_available.push(availabilities[availability].id);
+          }
+        });
     }
-  } catch(e) {
-    console.log(e)
+  } catch (err) {
+    console.log('Handled Error', err)
   }
   res.render('event', templateVars);
 });
@@ -99,7 +100,7 @@ app.post("/event/:hash", async (req, res) => {
   let _email = 'this@email.com';
 
   let times = req.body.timeSlot;
-  if(typeof times === 'string'){
+  if (typeof times === 'string') {
     times = [times];
   }
 
@@ -107,24 +108,24 @@ app.post("/event/:hash", async (req, res) => {
   let hash = req.params.hash;
 
   knex('attendees').insert({
-    name: _name,
-    email: _email,
-    event_id: _event_id
-  }).returning('*')
-  .then(([attendees]) => {
-    for(var time in times){
-      knex('attendees_times').insert({
-        attendee_id: attendees.id,
-        time_id: times[time]
-      }).returning('*')
-      .then((data) => {
-        console.log('Data: ', data);
-      })
-    }
-  })
-  .then(() => {
-    res.redirect(req.get("referer"));
-  })
+      name: _name,
+      email: _email,
+      event_id: _event_id
+    }).returning('*')
+    .then(([attendees]) => {
+      for (var time in times) {
+        knex('attendees_times').insert({
+            attendee_id: attendees.id,
+            time_id: times[time]
+          }).returning('*')
+          .then((data) => {
+            console.log('Data: ', data);
+          })
+      }
+    })
+    .then(() => {
+      res.redirect(req.get("referer"));
+    })
 
   // res.redirect('/event/' + hash);
 });
@@ -144,11 +145,11 @@ app.post('/create', schoodleRoutes(knex));
 //new edit add events
 app.post("/event/:hash/edit", (req, res) => {
   let times = req.body.timeSlot;
-  if(typeof times === 'string'){
+  if (typeof times === 'string') {
     times = [times];
   }
 
-  if(times) {
+  if (times) {
     console.log('Change Times');
   } else {
     console.log('Delete Times');
@@ -161,23 +162,25 @@ app.post("/event/:hash/edit", (req, res) => {
   console.log('time ids: ', times);
 
   knex('attendees_times')
-  .where({ attendee_id: _attendee_id })
-  .del()
-  .then(() =>{
-    for(var time in times){
-      knex('attendees_times').insert({
-        attendee_id: _attendee_id,
-        time_id: times[time]
-      }).returning('*')
-      .then((data) => {
-        console.log('Data: ', data);
-        res.redirect('/');
-      })
-    }
-  })
-  .then(() => {
-    res.redirect(req.get("referer"));
-  })
+    .where({
+      attendee_id: _attendee_id
+    })
+    .del()
+    .then(() => {
+      for (var time in times) {
+        knex('attendees_times').insert({
+            attendee_id: _attendee_id,
+            time_id: times[time]
+          }).returning('*')
+          .then((data) => {
+            console.log('Data: ', data);
+            res.redirect('/');
+          })
+      }
+    })
+    .then(() => {
+      res.redirect(req.get("referer"));
+    })
 })
 
 //------------------------------------------------------------
@@ -191,7 +194,7 @@ app.post("/event/:hash/edit", (req, res) => {
   console.log("button is now working");
 
   let times = req.body.timeSlot;
-  if(typeof times === 'string'){
+  if (typeof times === 'string') {
     times = [times];
   }
 
@@ -201,7 +204,7 @@ app.post("/event/:hash/edit", (req, res) => {
   console.log('time ids: ', times);
   let path = req.params.path;
 
-    // let _body = req.params;
+  // let _body = req.params;
   // console.log("body", _body);
 
   // let _name = req.body.name;
